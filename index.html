@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Club Funding Dashboard · NCSSM Durham SG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Sora:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f7f6f2;--card:#ffffff;--card-border:#e3e0d7;--text:#1a1916;--muted:#7a776e;
+  --green:#166534;--green-bg:#dcfce7;--green-text:#14532d;
+  --amber:#92400e;--amber-bg:#fef3c7;--amber-text:#78350f;
+  --red:#991b1b;--red-bg:#fee2e2;--red-text:#7f1d1d;
+  --blue:#1e3a8a;--blue-bg:#dbeafe;--blue-text:#1e3a8a;
+  --accent:#166534;--mono:'DM Mono',monospace;
+  --radius:10px;--radius-lg:14px
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#141412;--card:#1e1d1b;--card-border:#2e2c28;--text:#f0ede4;--muted:#8a8780;
+    --green:#4ade80;--green-bg:#052e16;--green-text:#bbf7d0;
+    --amber:#fbbf24;--amber-bg:#451a03;--amber-text:#fde68a;
+    --red:#f87171;--red-bg:#450a0a;--red-text:#fecaca;
+    --blue:#93c5fd;--blue-bg:#1e3a8a;--blue-text:#bfdbfe;
+    --accent:#4ade80
+  }
+}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* NAV */
+nav{background:var(--card);border-bottom:0.5px solid var(--card-border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
+.nav-logo{font-size:14px;font-weight:600;letter-spacing:-0.2px}
+.nav-logo span{color:var(--muted);font-weight:400}
+.nav-meta{font-size:11px;font-family:var(--mono);color:var(--muted)}
+.badge-live{background:var(--green-bg);color:var(--green-text);font-size:10px;font-family:var(--mono);padding:3px 9px;border-radius:5px;font-weight:500;margin-left:10px}
+
+/* LAYOUT */
+.container{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
+.page-header{margin-bottom:2rem}
+.page-header h1{font-size:26px;font-weight:600;letter-spacing:-0.5px}
+.page-header p{font-size:13px;color:var(--muted);margin-top:4px;font-family:var(--mono)}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem}
+@media(max-width:700px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+.stat-card{background:var(--card);border:0.5px solid var(--card-border);border-radius:var(--radius);padding:1rem 1.1rem;position:relative;overflow:hidden}
+.stat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--ac)}
+.stat-card.green{--ac:var(--green)}.stat-card.amber{--ac:var(--amber)}.stat-card.blue{--ac:var(--blue)}.stat-card.red{--ac:var(--red)}
+.stat-label{font-size:10px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:0.9px;margin-bottom:5px}
+.stat-val{font-size:24px;font-weight:600;font-variant-numeric:tabular-nums}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:3px}
+
+/* CHARTS ROW */
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem}
+@media(max-width:700px){.charts-row{grid-template-columns:1fr}}
+.panel{background:var(--card);border:0.5px solid var(--card-border);border-radius:var(--radius);padding:1.1rem}
+.panel-title{font-size:10px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:0.9px;margin-bottom:12px}
+.chart-wrap{position:relative;height:200px}
+
+/* CONTROLS */
+.controls{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+.filter-btn{background:var(--bg);border:0.5px solid var(--card-border);color:var(--muted);font-size:11px;font-family:var(--mono);padding:5px 13px;border-radius:6px;cursor:pointer;transition:all 0.15s}
+.filter-btn:hover{background:var(--card-border)}
+.filter-btn.active{background:var(--text);color:var(--bg);border-color:var(--text)}
+.search-box{flex:1;min-width:160px;max-width:240px;background:var(--bg);border:0.5px solid var(--card-border);border-radius:6px;padding:5px 11px;font-size:12px;font-family:var(--mono);color:var(--text);outline:none}
+.search-box:focus{border-color:var(--muted)}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;margin-bottom:1.5rem}
+.table-panel{background:var(--card);border:0.5px solid var(--card-border);border-radius:var(--radius);padding:1.1rem}
+table{width:100%;border-collapse:collapse;min-width:640px}
+th{font-size:10px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:0.7px;padding:6px 10px;text-align:left;border-bottom:0.5px solid var(--card-border);white-space:nowrap}
+td{font-size:12.5px;padding:9px 10px;border-bottom:0.5px solid var(--card-border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg);cursor:pointer}
+.club-name-cell{font-weight:500}
+.mono{font-family:var(--mono)}
+
+/* PILLS */
+.pill{font-size:10px;font-family:var(--mono);font-weight:500;padding:2px 8px;border-radius:4px;white-space:nowrap}
+.pill-green{background:var(--green-bg);color:var(--green-text)}
+.pill-amber{background:var(--amber-bg);color:var(--amber-text)}
+.pill-red{background:var(--red-bg);color:var(--red-text)}
+.pill-blue{background:var(--blue-bg);color:var(--blue-text)}
+.pill-gray{background:var(--card-border);color:var(--muted)}
+
+/* PROGRESS */
+.prog-wrap{display:flex;align-items:center;gap:6px}
+.prog-bar{height:5px;border-radius:3px;background:var(--card-border);flex:1;min-width:60px}
+.prog-fill{height:100%;border-radius:3px;transition:width 0.6s ease}
+.prog-pct{font-size:11px;font-family:var(--mono);color:var(--muted);min-width:32px}
+
+/* BOTTOM GRID */
+.bottom-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:10px;margin-bottom:1.5rem}
+@media(max-width:700px){.bottom-grid{grid-template-columns:1fr}}
+.club-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--card-border)}
+.club-row:last-child{border-bottom:none}
+.cr-name{flex:1;font-size:13px;font-weight:500}
+.cr-bar{flex:1.5;height:5px;background:var(--card-border);border-radius:3px;overflow:hidden;min-width:60px}
+.cr-bar-fill{height:100%;border-radius:3px;background:var(--green)}
+.cr-amt{font-size:12px;font-family:var(--mono);min-width:52px;text-align:right}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--card);border:0.5px solid var(--card-border);border-radius:var(--radius-lg);padding:1.5rem;width:min(480px,90vw);position:relative;max-height:85vh;overflow-y:auto}
+.modal-close{position:absolute;top:12px;right:14px;background:none;border:none;font-size:18px;color:var(--muted);cursor:pointer;line-height:1}
+.modal h2{font-size:17px;font-weight:600;margin-bottom:4px}
+.modal-cat{font-size:11px;font-family:var(--mono);color:var(--muted);margin-bottom:16px}
+.modal-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:0.5px solid var(--card-border);font-size:13px}
+.modal-row:last-child{border-bottom:none}
+.modal-label{color:var(--muted)}
+.modal-val{font-weight:500;font-family:var(--mono)}
+.edit-section{margin-top:16px;border-top:0.5px solid var(--card-border);padding-top:16px}
+.edit-section h3{font-size:12px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:10px}
+.form-row{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.form-row label{font-size:11px;font-family:var(--mono);color:var(--muted)}
+.form-row input,.form-row select{background:var(--bg);border:0.5px solid var(--card-border);border-radius:6px;padding:6px 10px;font-size:13px;font-family:var(--mono);color:var(--text);outline:none}
+.form-row input:focus,.form-row select:focus{border-color:var(--muted)}
+.btn-save{background:var(--text);color:var(--bg);border:none;border-radius:6px;padding:8px 18px;font-size:12px;font-family:var(--mono);cursor:pointer;font-weight:500;transition:opacity 0.15s}
+.btn-save:hover{opacity:0.85}
+.btn-cancel{background:none;border:0.5px solid var(--card-border);border-radius:6px;padding:8px 18px;font-size:12px;font-family:var(--mono);cursor:pointer;color:var(--muted);margin-left:8px}
+.admin-notice{background:var(--amber-bg);border:0.5px solid var(--amber);border-radius:6px;padding:8px 12px;font-size:11px;font-family:var(--mono);color:var(--amber-text);margin-bottom:12px}
+
+/* ADMIN TOGGLE */
+.admin-bar{background:var(--card);border:0.5px solid var(--card-border);border-radius:var(--radius);padding:10px 14px;margin-bottom:1.5rem;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.admin-bar label{font-size:11px;font-family:var(--mono);color:var(--muted)}
+.toggle{position:relative;display:inline-block;width:36px;height:20px}
+.toggle input{opacity:0;width:0;height:0}
+.slider{position:absolute;inset:0;background:var(--card-border);border-radius:10px;cursor:pointer;transition:0.2s}
+.slider:before{content:'';position:absolute;height:14px;width:14px;left:3px;bottom:3px;background:var(--muted);border-radius:50%;transition:0.2s}
+.toggle input:checked+.slider{background:var(--green)}
+.toggle input:checked+.slider:before{transform:translateX(16px);background:#fff}
+.admin-hint{font-size:11px;font-family:var(--mono);color:var(--muted)}
+
+/* FOOTER */
+footer{border-top:0.5px solid var(--card-border);padding:1.5rem;text-align:center;font-size:11px;font-family:var(--mono);color:var(--muted)}
+footer a{color:var(--muted);text-decoration:underline}
+
+/* ACTIVITY */
+.activity-list{display:flex;flex-direction:column}
+.act-item{display:flex;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--card-border);align-items:flex-start}
+.act-item:last-child{border-bottom:none}
+.act-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.act-dot.green{background:var(--green)}
+.act-dot.amber{background:var(--amber)}
+.act-dot.red{background:var(--red)}
+.act-body{flex:1}
+.act-what{font-size:12px;font-weight:500}
+.act-when{font-size:10px;color:var(--muted);font-family:var(--mono);margin-top:1px}
+.act-amt{font-size:12px;font-family:var(--mono)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">NCSSM Morganton SG <span>· Club Funding</span></div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <span class="nav-meta">2025–2026</span>
+    <span class="badge-live">LIVE</span>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="page-header">
+    <h1>Club Funding Transparency Dashboard</h1>
+    <p>Morganton Campus · Student Government Treasury · Updated <span id="lastUpdated"></span></p>
+  </div>
+
+  <div class="admin-bar">
+    <label for="adminToggle" style="color:var(--text);font-weight:500;font-size:12px">Admin Mode</label>
+    <label class="toggle"><input type="checkbox" id="adminToggle" onchange="toggleAdmin()"><span class="slider"></span></label>
+    <span class="admin-hint" id="adminHint">Turn on to edit club funding data (Treasury Board only)</span>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card green"><div class="stat-label">Total Allocated</div><div class="stat-val" id="statAllocated">—</div><div class="stat-sub" id="statClubs">— clubs funded</div></div>
+    <div class="stat-card amber"><div class="stat-label">Pending Review</div><div class="stat-val" id="statPending">—</div><div class="stat-sub" id="statPendingCount">— requests open</div></div>
+    <div class="stat-card blue"><div class="stat-label">Spent YTD</div><div class="stat-val" id="statSpent">—</div><div class="stat-sub" id="statUtil">— utilization</div></div>
+    <div class="stat-card red"><div class="stat-label">Remaining Budget</div><div class="stat-val" id="statRemaining">—</div><div class="stat-sub">semester reserve</div></div>
+  </div>
+
+  <div class="charts-row">
+    <div class="panel">
+      <div class="panel-title">Spending by Category</div>
+      <div class="chart-wrap"><canvas id="catChart" role="img" aria-label="Bar chart of club spending by category"></canvas></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Monthly Disbursements</div>
+      <div class="chart-wrap"><canvas id="monthChart" role="img" aria-label="Line chart of monthly disbursements"></canvas></div>
+    </div>
+  </div>
+
+  <div class="table-panel table-wrap">
+    <div class="panel-title" style="margin-bottom:10px">All Clubs · Funding Status</div>
+    <div class="controls">
+      <button class="filter-btn active" onclick="setFilter('all',this)">all</button>
+      <button class="filter-btn" onclick="setFilter('approved',this)">approved</button>
+      <button class="filter-btn" onclick="setFilter('pending',this)">pending</button>
+      <button class="filter-btn" onclick="setFilter('denied',this)">denied</button>
+      <button class="filter-btn" onclick="setFilter('not_submitted',this)">not submitted</button>
+      <input class="search-box" type="text" placeholder="search clubs..." oninput="searchClubs(this.value)">
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Club</th><th>Category</th><th>Contact</th><th>Requested</th><th>Approved</th><th>Spent</th><th>Utilization</th><th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="clubTableBody"></tbody>
+    </table>
+    <div id="emptyState" style="display:none;text-align:center;padding:2rem;font-size:13px;color:var(--muted);font-family:var(--mono)">no matching clubs</div>
+  </div>
+
+  <div class="bottom-grid">
+    <div class="panel">
+      <div class="panel-title">Top Funded Clubs</div>
+      <div id="topClubs"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Recent Activity</div>
+      <div class="activity-list" id="activityList"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  NCSSM Morganton Student Government · Club Funding Dashboard ·
+  <a href="https://mor-sg.ncssm.edu/club-information/club-list" target="_blank">Official Club List</a> ·
+  Questions? Contact the Treasury Board via the SG portal.
+</footer>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg" onclick="closeModalBg(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h2 id="mName"></h2>
+    <div class="modal-cat" id="mCat"></div>
+    <div id="mDetails"></div>
+    <div class="edit-section" id="editSection" style="display:none">
+      <h3>Edit Funding</h3>
+      <div class="admin-notice">Changes are saved locally. Export data via the button below to persist.</div>
+      <div class="form-row">
+        <label>Requested ($)</label>
+        <input type="number" id="editReq" placeholder="0">
+      </div>
+      <div class="form-row">
+        <label>Approved ($)</label>
+        <input type="number" id="editApp" placeholder="0">
+      </div>
+      <div class="form-row">
+        <label>Spent ($)</label>
+        <input type="number" id="editSpent" placeholder="0">
+      </div>
+      <div class="form-row">
+        <label>Status</label>
+        <select id="editStatus">
+          <option value="not_submitted">Not Submitted</option>
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="denied">Denied</option>
+        </select>
+      </div>
+      <div style="margin-top:4px">
+        <button class="btn-save" onclick="saveEdit()">Save</button>
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const CLUBS_RAW = [
+  // ACADEMIC
+  {name:"Interact",cat:"Academic",contact:"Alexa",email:"kittle26a@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Draco Astronomy Club",cat:"Academic",contact:"Pippa",email:"hollingsworth26p@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Botany and Environmental Engineering (B.E.E.)",cat:"Academic",contact:"Riley",email:"athoffmeier26r@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Youth Movement Against Alzheimer's",cat:"Academic",contact:"Riley",email:"athoffmeier26r@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Cybersecurity Club",cat:"Academic",contact:"Jacob",email:"jacobrodriguez26j@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Physics Club",cat:"Academic",contact:"Pranav",email:"yaramalla27p@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Forensics Club",cat:"Academic",contact:"Anushka / Malaysia",email:"salunkhe26a@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"STEM Researcher Club",cat:"Academic",contact:"Satvik",email:"kunam27s@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"IYNA",cat:"Academic",contact:"Monica",email:"rivera26m@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Teen Lifestyle Medicine Club",cat:"Academic",contact:"Layla",email:"ibrahim27l@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Molecular Biology and Biochemistry Club",cat:"Academic",contact:"Alvin / Emma",email:"qu26alvin@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Feminist Literature Club",cat:"Academic",contact:"Jacob",email:"jacobrodriguez26j@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"The Tower Tribune",cat:"Academic",contact:"Noah",email:"senzon26n@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Finance Club",cat:"Academic",contact:"Rohin",email:"patel26r@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Students For Chicago",cat:"Academic",contact:"Hadley",email:"lord26h@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Investment Club",cat:"Academic",contact:"Janhavi",email:"lonari26j@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  // CULTURAL
+  {name:"Jewish Cultural Club",cat:"Cultural",contact:"Hadley",email:"atlord26h@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Black Student Union",cat:"Cultural",contact:"Iesha",email:"landis26i@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Asian Cultures Association (ACA)",cat:"Cultural",contact:"Gina",email:"atbyon26g@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Latin American Cultures Club",cat:"Cultural",contact:"Angel",email:"rueda26a@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Moblock Eats",cat:"Cultural",contact:"Raymond",email:"lin26r@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Spectrum",cat:"Cultural",contact:"Elle",email:"hernandez26l@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Hindu YUVA",cat:"Cultural",contact:"Sisritha",email:"amara26s@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  // SOCIAL/LIFESTYLE
+  {name:"Milk Club",cat:"Social/Lifestyle",contact:"Tarini",email:"nallavolu26t@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Badminton Club",cat:"Social/Lifestyle",contact:"Lucas",email:"packard26l@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Men's Volleyball Club",cat:"Social/Lifestyle",contact:"Greyson",email:"bristol26g@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Fencing Club",cat:"Social/Lifestyle",contact:"Hudson",email:"white26h@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Climbing Club",cat:"Social/Lifestyle",contact:"Alex",email:"johnston26a@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Hiking Club",cat:"Social/Lifestyle",contact:"Alex",email:"johnston26a@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"NCSD NCSSM Pen Pals Club",cat:"Social/Lifestyle",contact:"Ariel",email:"taylor26a@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Bible Club",cat:"Social/Lifestyle",contact:"Chioma / Kasey",email:"duru26c@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"1000 Push-Ups Club",cat:"Social/Lifestyle",contact:"Nolan",email:"richardson26n@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Boxing Club",cat:"Social/Lifestyle",contact:"Gabe",email:"benitestoruno26g@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Military Club",cat:"Social/Lifestyle",contact:"Nathan",email:"pocaigue26n@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  // OUTREACH
+  {name:"Teen Democrats of NCSSM",cat:"Outreach",contact:"Noah",email:"senzon26n@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Red Cross",cat:"Outreach",contact:"Ben",email:"ahn26b@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Footprints & Pages",cat:"Outreach",contact:"Tarini",email:"nallavolu26t@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Animal Shelter Helpers",cat:"Outreach",contact:"Nicole",email:"taylor26n@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Key Club",cat:"Outreach",contact:"Anushka / Alex",email:"salunkhe26a@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Music Outreach Club",cat:"Outreach",contact:"Julia",email:"lee26julia@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"The Charismatic Quills of Kindness Club",cat:"Outreach",contact:"Logan",email:"logan.hill@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  // ARTS
+  {name:"Muslim Student Association",cat:"Arts",contact:"Sarah",email:"lantner26s@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Art Club",cat:"Arts",contact:"Pippa",email:"hollingsworth26p@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Hour of Yarn Club",cat:"Arts",contact:"Julia",email:"wang26j@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Pep Band",cat:"Arts",contact:"Lucas",email:"packard26l@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+];
+
+let clubs = loadClubs();
+let currentFilter = 'all';
+let currentSearch = '';
+let adminMode = false;
+let editingIdx = null;
+
+function loadClubs(){
+  try{
+    const saved = localStorage.getItem('ncssm_clubs_v2');
+    if(saved) return JSON.parse(saved);
+  }catch(e){}
+  return CLUBS_RAW.map((c,i)=>({...c,id:i}));
+}
+
+function saveClubs(){
+  try{ localStorage.setItem('ncssm_clubs_v2', JSON.stringify(clubs)); }catch(e){}
+}
+
+function fmt(n){ return n>0 ? '$'+n.toLocaleString() : '—'; }
+function pct(a,b){ return (b>0 && a>0) ? Math.round((a/b)*100) : 0; }
+
+function statusPill(s){
+  const map={approved:'pill-green',pending:'pill-amber',denied:'pill-red',not_submitted:'pill-gray'};
+  const label={approved:'approved',pending:'pending',denied:'denied',not_submitted:'not submitted'};
+  return `<span class="pill ${map[s]||'pill-gray'}">${label[s]||s}</span>`;
+}
+
+function catPill(c){
+  const map={Academic:'pill-blue',Cultural:'pill-amber',Outreach:'pill-green','Social/Lifestyle':'pill-gray',Arts:'pill-amber'};
+  return `<span class="pill ${map[c]||'pill-gray'}" style="font-size:9px">${c}</span>`;
+}
+
+function barColor(p){
+  if(p>=80)return'#166534';if(p>=50)return'#92400e';return'#991b1b';
+}
+
+function renderStats(){
+  const approved = clubs.filter(c=>c.status==='approved');
+  const pending = clubs.filter(c=>c.status==='pending');
+  const totalApp = approved.reduce((s,c)=>s+c.app,0);
+  const totalSpent = approved.reduce((s,c)=>s+c.spent,0);
+  const totalPendingReq = pending.reduce((s,c)=>s+c.req,0);
+  const util = totalApp>0 ? Math.round((totalSpent/totalApp)*100) : 0;
+  document.getElementById('statAllocated').textContent = '$'+totalApp.toLocaleString();
+  document.getElementById('statClubs').textContent = approved.length+' clubs funded';
+  document.getElementById('statPending').textContent = '$'+totalPendingReq.toLocaleString();
+  document.getElementById('statPendingCount').textContent = pending.length+' requests open';
+  document.getElementById('statSpent').textContent = '$'+totalSpent.toLocaleString();
+  document.getElementById('statUtil').textContent = util+'% utilization';
+  const remaining = Math.max(0, totalApp - totalSpent);
+  document.getElementById('statRemaining').textContent = '$'+remaining.toLocaleString();
+}
+
+function filteredClubs(){
+  let list = clubs;
+  if(currentFilter !== 'all') list = list.filter(c=>c.status===currentFilter);
+  if(currentSearch) list = list.filter(c=>c.name.toLowerCase().includes(currentSearch.toLowerCase())||c.cat.toLowerCase().includes(currentSearch.toLowerCase())||c.contact.toLowerCase().includes(currentSearch.toLowerCase()));
+  return list;
+}
+
+function renderTable(){
+  const list = filteredClubs();
+  const tbody = document.getElementById('clubTableBody');
+  const empty = document.getElementById('emptyState');
+  if(!list.length){ tbody.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+  tbody.innerHTML = list.map(c=>{
+    const p = pct(c.spent,c.app);
+    const bc = barColor(p);
+    const adminClick = adminMode ? `onclick="openModal(${c.id})"` : `onclick="openModal(${c.id})"`;
+    return `<tr ${adminClick}>
+      <td class="club-name-cell">${c.name}</td>
+      <td>${catPill(c.cat)}</td>
+      <td style="font-size:12px;color:var(--muted)">${c.contact}</td>
+      <td class="mono">${fmt(c.req)}</td>
+      <td class="mono">${fmt(c.app)}</td>
+      <td class="mono">${fmt(c.spent)}</td>
+      <td>${c.app>0 ? `<div class="prog-wrap"><div class="prog-bar"><div class="prog-fill" style="width:${p}%;background:${bc}"></div></div><span class="prog-pct">${p}%</span></div>` : '<span style="font-size:11px;color:var(--muted);font-family:var(--mono)">—</span>'}</td>
+      <td>${statusPill(c.status)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function setFilter(f, btn){
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+function searchClubs(v){
+  currentSearch = v;
+  renderTable();
+}
+
+function renderTopClubs(){
+  const top = [...clubs].filter(c=>c.app>0).sort((a,b)=>b.app-a.app).slice(0,6);
+  const max = top.length ? top[0].app : 1;
+  document.getElementById('topClubs').innerHTML = top.length
+    ? top.map(c=>`<div class="club-row"><span class="cr-name">${c.name}</span><div class="cr-bar"><div class="cr-bar-fill" style="width:${Math.round((c.app/max)*100)}%"></div></div><span class="cr-amt">${fmt(c.app)}</span></div>`).join('')
+    : '<p style="font-size:12px;color:var(--muted);font-family:var(--mono)">No approved funding yet</p>';
+}
+
+function renderActivity(){
+  const events = [];
+  clubs.forEach(c=>{
+    if(c.status==='approved'&&c.spent>0) events.push({dot:'green',what:`${c.name} — spending tracked`,amt:fmt(c.spent)});
+    else if(c.status==='pending') events.push({dot:'amber',what:`${c.name} — under review`,amt:fmt(c.req)});
+    else if(c.status==='denied') events.push({dot:'red',what:`${c.name} — request denied`,amt:fmt(c.req)});
+  });
+  const list = events.slice(0,7);
+  document.getElementById('activityList').innerHTML = list.length
+    ? list.map(a=>`<div class="act-item"><div class="act-dot ${a.dot}"></div><div class="act-body"><div class="act-what">${a.what}</div><div class="act-when">2025–2026</div></div><div class="act-amt">${a.amt}</div></div>`).join('')
+    : '<p style="font-size:12px;color:var(--muted);font-family:var(--mono)">No activity yet</p>';
+}
+
+let catChartInst, monthChartInst;
+function renderCharts(){
+  const isDark = matchMedia('(prefers-color-scheme:dark)').matches;
+  const tc = isDark?'#8a8780':'#7a776e';
+  const gc = isDark?'#2e2c28':'#e3e0d7';
+  const catOrder = ['Academic','Cultural','Social/Lifestyle','Outreach','Arts'];
+  const catSpend = catOrder.map(cat=>clubs.filter(c=>c.cat===cat).reduce((s,c)=>s+c.spent,0));
+  const catApp = catOrder.map(cat=>clubs.filter(c=>c.cat===cat).reduce((s,c)=>s+c.app,0));
+  const baseOpts = {responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:tc,font:{size:10,family:"'DM Mono',monospace"},autoSkip:false},grid:{color:gc}},y:{ticks:{color:tc,font:{size:10,family:"'DM Mono',monospace"},callback:v=>'$'+v.toLocaleString()},grid:{color:gc}}}};
+  if(catChartInst) catChartInst.destroy();
+  catChartInst = new Chart(document.getElementById('catChart'),{
+    type:'bar',
+    data:{labels:catOrder,datasets:[
+      {label:'Approved',data:catApp,backgroundColor:isDark?'rgba(74,222,128,0.25)':'rgba(22,101,52,0.15)',borderColor:isDark?'#4ade80':'#166534',borderWidth:1,borderRadius:3},
+      {label:'Spent',data:catSpend,backgroundColor:isDark?'rgba(74,222,128,0.7)':'rgba(22,101,52,0.7)',borderColor:isDark?'#4ade80':'#166534',borderWidth:1,borderRadius:3}
+    ]},
+    options:{...baseOpts}
+  });
+  if(monthChartInst) monthChartInst.destroy();
+  const totalSpent = clubs.reduce((s,c)=>s+c.spent,0);
+  const monthData = [0,0,0,0,totalSpent,0];
+  monthChartInst = new Chart(document.getElementById('monthChart'),{
+    type:'line',
+    data:{labels:['Jan','Feb','Mar','Apr','May','Jun'],datasets:[{label:'Disbursed',data:monthData,borderColor:isDark?'#fbbf24':'#92400e',backgroundColor:isDark?'rgba(251,191,36,0.1)':'rgba(146,64,14,0.08)',fill:true,tension:0.4,pointRadius:4,pointBackgroundColor:isDark?'#fbbf24':'#92400e'}]},
+    options:{...baseOpts}
+  });
+}
+
+function toggleAdmin(){
+  adminMode = document.getElementById('adminToggle').checked;
+  document.getElementById('adminHint').textContent = adminMode
+    ? 'Click any club row to edit funding data. Changes are saved locally.'
+    : 'Turn on to edit club funding data (Treasury Board only)';
+}
+
+function openModal(id){
+  const c = clubs.find(x=>x.id===id);
+  if(!c) return;
+  editingIdx = id;
+  document.getElementById('mName').textContent = c.name;
+  document.getElementById('mCat').textContent = c.cat+' · '+c.contact+' · '+c.email;
+  const p = pct(c.spent,c.app);
+  document.getElementById('mDetails').innerHTML = `
+    <div class="modal-row"><span class="modal-label">Status</span>${statusPill(c.status)}</div>
+    <div class="modal-row"><span class="modal-label">Requested</span><span class="modal-val">${fmt(c.req)}</span></div>
+    <div class="modal-row"><span class="modal-label">Approved</span><span class="modal-val">${fmt(c.app)}</span></div>
+    <div class="modal-row"><span class="modal-label">Spent</span><span class="modal-val">${fmt(c.spent)}</span></div>
+    <div class="modal-row"><span class="modal-label">Utilization</span><span class="modal-val">${c.app>0?p+'%':'—'}</span></div>
+    <div class="modal-row"><span class="modal-label">Contact email</span><a href="mailto:${c.email}" style="color:var(--blue-text);font-family:var(--mono);font-size:12px">${c.email}</a></div>
+  `;
+  const editSection = document.getElementById('editSection');
+  if(adminMode){
+    editSection.style.display='block';
+    document.getElementById('editReq').value = c.req||'';
+    document.getElementById('editApp').value = c.app||'';
+    document.getElementById('editSpent').value = c.spent||'';
+    document.getElementById('editStatus').value = c.status;
+  } else {
+    editSection.style.display='none';
+  }
+  document.getElementById('modalBg').classList.add('open');
+}
+
+function closeModal(){ document.getElementById('modalBg').classList.remove('open'); }
+function closeModalBg(e){ if(e.target===document.getElementById('modalBg')) closeModal(); }
+
+function saveEdit(){
+  const c = clubs.find(x=>x.id===editingIdx);
+  if(!c) return;
+  c.req = parseInt(document.getElementById('editReq').value)||0;
+  c.app = parseInt(document.getElementById('editApp').value)||0;
+  c.spent = parseInt(document.getElementById('editSpent').value)||0;
+  c.status = document.getElementById('editStatus').value;
+  saveClubs();
+  closeModal();
+  renderAll();
+}
+
+function renderAll(){
+  renderStats();
+  renderTable();
+  renderTopClubs();
+  renderActivity();
+  renderCharts();
+}
+
+document.getElementById('lastUpdated').textContent = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+renderAll();
+</script>
+</body>
+</html>
