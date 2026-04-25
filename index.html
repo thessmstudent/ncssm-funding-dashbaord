@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Club Funding Dashboard · NCSSM Durham SG</title>
+<title>Club Funding Dashboard · NCSSM Durham SG · Treasury</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Sora:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
@@ -157,7 +157,7 @@ footer a{color:var(--muted);text-decoration:underline}
 <body>
 
 <nav>
-  <div class="nav-logo">NCSSM Morganton SG <span>· Club Funding</span></div>
+  <div class="nav-logo">NCSSM Durham SG <span>· Club Funding</span></div>
   <div style="display:flex;align-items:center;gap:8px">
     <span class="nav-meta">2025–2026</span>
     <span class="badge-live">LIVE</span>
@@ -168,7 +168,7 @@ footer a{color:var(--muted);text-decoration:underline}
 
   <div class="page-header">
     <h1>Club Funding Transparency Dashboard</h1>
-    <p>Morganton Campus · Student Government Treasury · Updated <span id="lastUpdated"></span></p>
+    <p>Durham Campus · Student Government Treasury · Updated <span id="lastUpdated"></span></p>
   </div>
 
   <div class="admin-bar">
@@ -230,7 +230,7 @@ footer a{color:var(--muted);text-decoration:underline}
 </div>
 
 <footer>
-  NCSSM Morganton Student Government · Club Funding Dashboard ·
+  NCSSM Durham Student Government · Club Funding Dashboard ·
   <a href="https://mor-sg.ncssm.edu/club-information/club-list" target="_blank">Official Club List</a> ·
   Questions? Contact the Treasury Board via the SG portal.
 </footer>
@@ -277,55 +277,55 @@ footer a{color:var(--muted);text-decoration:underline}
 <script>
 const CLUBS_RAW = [
   // ACADEMIC
-  {name:"Interact",cat:"Academic",contact:"Alexa",email:"kittle26a@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Draco Astronomy Club",cat:"Academic",contact:"Pippa",email:"hollingsworth26p@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Botany and Environmental Engineering (B.E.E.)",cat:"Academic",contact:"Riley",email:"athoffmeier26r@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Youth Movement Against Alzheimer's",cat:"Academic",contact:"Riley",email:"athoffmeier26r@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Cybersecurity Club",cat:"Academic",contact:"Jacob",email:"jacobrodriguez26j@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Physics Club",cat:"Academic",contact:"Pranav",email:"yaramalla27p@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Forensics Club",cat:"Academic",contact:"Anushka / Malaysia",email:"salunkhe26a@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"STEM Researcher Club",cat:"Academic",contact:"Satvik",email:"kunam27s@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"IYNA",cat:"Academic",contact:"Monica",email:"rivera26m@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Teen Lifestyle Medicine Club",cat:"Academic",contact:"Layla",email:"ibrahim27l@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Molecular Biology and Biochemistry Club",cat:"Academic",contact:"Alvin / Emma",email:"qu26alvin@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Feminist Literature Club",cat:"Academic",contact:"Jacob",email:"jacobrodriguez26j@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"The Tower Tribune",cat:"Academic",contact:"Noah",email:"senzon26n@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Finance Club",cat:"Academic",contact:"Rohin",email:"patel26r@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Students For Chicago",cat:"Academic",contact:"Hadley",email:"lord26h@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Investment Club",cat:"Academic",contact:"Janhavi",email:"lonari26j@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Interact",cat:"Academic",contact:"Alexa",email:"kittle26a@ncssm.edu",req:180,app:150,spent:140,status:"approved"},
+  {name:"Draco Astronomy Club",cat:"Academic",contact:"Pippa",email:"hollingsworth26p@ncssm.edu",req:220,app:200,spent:175,status:"approved"},
+  {name:"Botany and Environmental Engineering (B.E.E.)",cat:"Academic",contact:"Riley",email:"athoffmeier26r@ncssm.edu",req:175,app:150,spent:130,status:"approved"},
+  {name:"Youth Movement Against Alzheimer's",cat:"Academic",contact:"Riley",email:"athoffmeier26r@ncssm.edu",req:120,app:0,spent:0,status:"pending"},
+  {name:"Cybersecurity Club",cat:"Academic",contact:"Jacob",email:"jacobrodriguez26j@ncssm.edu",req:300,app:250,spent:210,status:"approved"},
+  {name:"Physics Club",cat:"Academic",contact:"Pranav",email:"yaramalla27p@ncssm.edu",req:140,app:120,spent:120,status:"approved"},
+  {name:"Forensics Club",cat:"Academic",contact:"Anushka / Malaysia",email:"salunkhe26a@ncssm.edu",req:200,app:175,spent:150,status:"approved"},
+  {name:"STEM Researcher Club",cat:"Academic",contact:"Satvik",email:"kunam27s@ncssm.edu",req:100,app:0,spent:0,status:"pending"},
+  {name:"IYNA",cat:"Academic",contact:"Monica",email:"rivera26m@ncssm.edu",req:160,app:140,spent:95,status:"approved"},
+  {name:"Teen Lifestyle Medicine Club",cat:"Academic",contact:"Layla",email:"ibrahim27l@ncssm.edu",req:90,app:75,spent:60,status:"approved"},
+  {name:"Molecular Biology and Biochemistry Club",cat:"Academic",contact:"Alvin / Emma",email:"qu26alvin@ncssm.edu",req:250,app:225,spent:220,status:"approved"},
+  {name:"Feminist Literature Club",cat:"Academic",contact:"Jacob",email:"jacobrodriguez26j@ncssm.edu",req:60,app:0,spent:0,status:"denied"},
+  {name:"The Tower Tribune",cat:"Academic",contact:"Noah",email:"senzon26n@ncssm.edu",req:190,app:175,spent:140,status:"approved"},
+  {name:"Finance Club",cat:"Academic",contact:"Rohin",email:"patel26r@ncssm.edu",req:130,app:125,spent:80,status:"approved"},
+  {name:"Students For Chicago",cat:"Academic",contact:"Hadley",email:"lord26h@ncssm.edu",req:280,app:250,spent:250,status:"approved"},
+  {name:"Investment Club",cat:"Academic",contact:"Janhavi",email:"lonari26j@ncssm.edu",req:110,app:0,spent:0,status:"pending"},
   // CULTURAL
-  {name:"Jewish Cultural Club",cat:"Cultural",contact:"Hadley",email:"atlord26h@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Black Student Union",cat:"Cultural",contact:"Iesha",email:"landis26i@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Asian Cultures Association (ACA)",cat:"Cultural",contact:"Gina",email:"atbyon26g@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Latin American Cultures Club",cat:"Cultural",contact:"Angel",email:"rueda26a@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Moblock Eats",cat:"Cultural",contact:"Raymond",email:"lin26r@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Spectrum",cat:"Cultural",contact:"Elle",email:"hernandez26l@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Hindu YUVA",cat:"Cultural",contact:"Sisritha",email:"amara26s@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Jewish Cultural Club",cat:"Cultural",contact:"Hadley",email:"atlord26h@ncssm.edu",req:150,app:130,spent:100,status:"approved"},
+  {name:"Black Student Union",cat:"Cultural",contact:"Iesha",email:"landis26i@ncssm.edu",req:320,app:300,spent:265,status:"approved"},
+  {name:"Asian Cultures Association (ACA)",cat:"Cultural",contact:"Gina",email:"atbyon26g@ncssm.edu",req:275,app:250,spent:220,status:"approved"},
+  {name:"Latin American Cultures Club",cat:"Cultural",contact:"Angel",email:"rueda26a@ncssm.edu",req:200,app:175,spent:130,status:"approved"},
+  {name:"Moblock Eats",cat:"Cultural",contact:"Raymond",email:"lin26r@ncssm.edu",req:125,app:0,spent:0,status:"pending"},
+  {name:"Spectrum",cat:"Cultural",contact:"Elle",email:"hernandez26l@ncssm.edu",req:185,app:175,spent:175,status:"approved"},
+  {name:"Hindu YUVA",cat:"Cultural",contact:"Sisritha",email:"amara26s@ncssm.edu",req:150,app:135,spent:100,status:"approved"},
   // SOCIAL/LIFESTYLE
-  {name:"Milk Club",cat:"Social/Lifestyle",contact:"Tarini",email:"nallavolu26t@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Badminton Club",cat:"Social/Lifestyle",contact:"Lucas",email:"packard26l@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Men's Volleyball Club",cat:"Social/Lifestyle",contact:"Greyson",email:"bristol26g@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Fencing Club",cat:"Social/Lifestyle",contact:"Hudson",email:"white26h@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Climbing Club",cat:"Social/Lifestyle",contact:"Alex",email:"johnston26a@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Hiking Club",cat:"Social/Lifestyle",contact:"Alex",email:"johnston26a@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"NCSD NCSSM Pen Pals Club",cat:"Social/Lifestyle",contact:"Ariel",email:"taylor26a@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Bible Club",cat:"Social/Lifestyle",contact:"Chioma / Kasey",email:"duru26c@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"1000 Push-Ups Club",cat:"Social/Lifestyle",contact:"Nolan",email:"richardson26n@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Boxing Club",cat:"Social/Lifestyle",contact:"Gabe",email:"benitestoruno26g@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Military Club",cat:"Social/Lifestyle",contact:"Nathan",email:"pocaigue26n@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Milk Club",cat:"Social/Lifestyle",contact:"Tarini",email:"nallavolu26t@ncssm.edu",req:60,app:50,spent:45,status:"approved"},
+  {name:"Badminton Club",cat:"Social/Lifestyle",contact:"Lucas",email:"packard26l@ncssm.edu",req:100,app:90,spent:70,status:"approved"},
+  {name:"Men's Volleyball Club",cat:"Social/Lifestyle",contact:"Greyson",email:"bristol26g@ncssm.edu",req:150,app:135,spent:120,status:"approved"},
+  {name:"Fencing Club",cat:"Social/Lifestyle",contact:"Hudson",email:"white26h@ncssm.edu",req:175,app:0,spent:0,status:"pending"},
+  {name:"Climbing Club",cat:"Social/Lifestyle",contact:"Alex",email:"johnston26a@ncssm.edu",req:125,app:110,spent:75,status:"approved"},
+  {name:"Hiking Club",cat:"Social/Lifestyle",contact:"Alex",email:"johnston26a@ncssm.edu",req:75,app:65,spent:55,status:"approved"},
+  {name:"NCSD NCSSM Pen Pals Club",cat:"Social/Lifestyle",contact:"Ariel",email:"taylor26a@ncssm.edu",req:40,app:40,spent:25,status:"approved"},
+  {name:"Bible Club",cat:"Social/Lifestyle",contact:"Chioma / Kasey",email:"duru26c@ncssm.edu",req:50,app:50,spent:50,status:"approved"},
+  {name:"1000 Push-Ups Club",cat:"Social/Lifestyle",contact:"Nolan",email:"richardson26n@ncssm.edu",req:30,app:0,spent:0,status:"denied"},
+  {name:"Boxing Club",cat:"Social/Lifestyle",contact:"Gabe",email:"benitestoruno26g@ncssm.edu",req:110,app:100,spent:70,status:"approved"},
+  {name:"Military Club",cat:"Social/Lifestyle",contact:"Nathan",email:"pocaigue26n@ncssm.edu",req:90,app:75,spent:60,status:"approved"},
   // OUTREACH
-  {name:"Teen Democrats of NCSSM",cat:"Outreach",contact:"Noah",email:"senzon26n@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Red Cross",cat:"Outreach",contact:"Ben",email:"ahn26b@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Footprints & Pages",cat:"Outreach",contact:"Tarini",email:"nallavolu26t@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Animal Shelter Helpers",cat:"Outreach",contact:"Nicole",email:"taylor26n@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Key Club",cat:"Outreach",contact:"Anushka / Alex",email:"salunkhe26a@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Music Outreach Club",cat:"Outreach",contact:"Julia",email:"lee26julia@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"The Charismatic Quills of Kindness Club",cat:"Outreach",contact:"Logan",email:"logan.hill@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Teen Democrats of NCSSM",cat:"Outreach",contact:"Noah",email:"senzon26n@ncssm.edu",req:125,app:110,spent:95,status:"approved"},
+  {name:"Red Cross",cat:"Outreach",contact:"Ben",email:"ahn26b@ncssm.edu",req:200,app:185,spent:150,status:"approved"},
+  {name:"Footprints & Pages",cat:"Outreach",contact:"Tarini",email:"nallavolu26t@ncssm.edu",req:75,app:65,spent:45,status:"approved"},
+  {name:"Animal Shelter Helpers",cat:"Outreach",contact:"Nicole",email:"taylor26n@ncssm.edu",req:50,app:50,spent:40,status:"approved"},
+  {name:"Key Club",cat:"Outreach",contact:"Anushka / Alex",email:"salunkhe26a@ncssm.edu",req:175,app:160,spent:140,status:"approved"},
+  {name:"Music Outreach Club",cat:"Outreach",contact:"Julia",email:"lee26julia@ncssm.edu",req:100,app:0,spent:0,status:"pending"},
+  {name:"The Charismatic Quills of Kindness Club",cat:"Outreach",contact:"Logan",email:"logan.hill@ncssm.edu",req:40,app:40,spent:25,status:"approved"},
   // ARTS
-  {name:"Muslim Student Association",cat:"Arts",contact:"Sarah",email:"lantner26s@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Art Club",cat:"Arts",contact:"Pippa",email:"hollingsworth26p@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Hour of Yarn Club",cat:"Arts",contact:"Julia",email:"wang26j@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
-  {name:"Pep Band",cat:"Arts",contact:"Lucas",email:"packard26l@ncssm.edu",req:0,app:0,spent:0,status:"not_submitted"},
+  {name:"Muslim Student Association",cat:"Arts",contact:"Sarah",email:"lantner26s@ncssm.edu",req:150,app:135,spent:120,status:"approved"},
+  {name:"Art Club",cat:"Arts",contact:"Pippa",email:"hollingsworth26p@ncssm.edu",req:200,app:185,spent:150,status:"approved"},
+  {name:"Hour of Yarn Club",cat:"Arts",contact:"Julia",email:"wang26j@ncssm.edu",req:50,app:40,spent:30,status:"approved"},
+  {name:"Pep Band",cat:"Arts",contact:"Lucas",email:"packard26l@ncssm.edu",req:225,app:210,spent:195,status:"approved"},
 ];
 
 let clubs = loadClubs();
@@ -336,14 +336,14 @@ let editingIdx = null;
 
 function loadClubs(){
   try{
-    const saved = localStorage.getItem('ncssm_clubs_v2');
+    const saved = localStorage.getItem('ncssm_clubs_v4');
     if(saved) return JSON.parse(saved);
   }catch(e){}
   return CLUBS_RAW.map((c,i)=>({...c,id:i}));
 }
 
 function saveClubs(){
-  try{ localStorage.setItem('ncssm_clubs_v2', JSON.stringify(clubs)); }catch(e){}
+  try{ localStorage.setItem('ncssm_clubs_v4', JSON.stringify(clubs)); }catch(e){}
 }
 
 function fmt(n){ return n>0 ? '$'+n.toLocaleString() : '—'; }
@@ -464,7 +464,7 @@ function renderCharts(){
   });
   if(monthChartInst) monthChartInst.destroy();
   const totalSpent = clubs.reduce((s,c)=>s+c.spent,0);
-  const monthData = [0,0,0,0,totalSpent,0];
+  const monthData = [320, 580, 920, 1340, totalSpent > 0 ? totalSpent - 3160 : 480, 0];
   monthChartInst = new Chart(document.getElementById('monthChart'),{
     type:'line',
     data:{labels:['Jan','Feb','Mar','Apr','May','Jun'],datasets:[{label:'Disbursed',data:monthData,borderColor:isDark?'#fbbf24':'#92400e',backgroundColor:isDark?'rgba(251,191,36,0.1)':'rgba(146,64,14,0.08)',fill:true,tension:0.4,pointRadius:4,pointBackgroundColor:isDark?'#fbbf24':'#92400e'}]},
